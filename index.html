@@ -22,7 +22,7 @@
             --success: #4ade80;
             --danger: #f87171;
             --warning: #f59e0b;
-            --evaluasi-color: #a855f7;
+            --evaluasi: #a855f7;
         }
 
         body {
@@ -66,8 +66,8 @@
         /* TYPOGRAPHY */
         h1 { color: var(--primary); font-size: 24px; margin-bottom: 8px; text-align: center; }
         h2 { color: var(--text-light); font-size: 18px; margin-bottom: 12px; }
-        h3 { color: var(--primary); font-size: 15px; margin-bottom: 4px; }
-        p { color: var(--text-muted); font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
+        h3 { font-size: 14px; text-align: center; font-weight: bold; line-height: 1.3; }
+        p { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 10px; }
 
         /* BUTTONS */
         .btn {
@@ -110,35 +110,53 @@
         /* SC-02: DASHBOARD MENU */
         .grid-materi {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 15px;
             overflow-y: auto;
-            max-height: 70vh;
+            flex-grow: 1;
             padding-right: 5px;
         }
         .card-materi {
             background-color: var(--bg-card);
             border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 15px 10px;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 90px;
         }
         .card-materi:hover {
             border-color: var(--primary);
             background-color: #1e293b90;
+            transform: translateY(-2px);
         }
-        .card-evaluasi {
-            border: 2px dashed var(--evaluasi-color);
-            background: linear-gradient(145deg, #1e293b, #2e1065);
+        .card-materi.evaluasi-card {
+            border-color: var(--evaluasi);
+            background: linear-gradient(135deg, #1e293b 0%, #2e1065 100%);
+            grid-column: span 2;
         }
-        .card-evaluasi h3 {
-            color: var(--evaluasi-color);
-        }
-        .card-evaluasi:hover {
+        .card-materi.evaluasi-card:hover {
             border-color: #c084fc;
-            background: linear-gradient(145deg, #1e293b, #3b0764);
+            background: linear-gradient(135deg, #1e293b 0%, #3b0764 100%);
+        }
+        .card-materi.evaluasi-card h3 {
+            color: #d8b4fe;
+        }
+
+        /* INLINE SVG ICONS */
+        .icon {
+            width: 28px;
+            height: 28px;
+            fill: var(--primary);
+        }
+        .evaluasi-card .icon {
+            fill: #c084fc;
         }
 
         /* FLEXIBLE RESPONSIVE SPLIT LAYOUT */
@@ -221,16 +239,24 @@
             transition: width 0.1s, background 0.2s;
         }
 
-        /* MEDIA QUERIES FOR LANDSCAPE / TABLETS */
-        @media (min-width: 600px) {
-            .grid-materi {
-                grid-template-columns: repeat(2, 1fr);
+        /* MEDIA QUERIES FOR LARGER DEVICES */
+        @media (min-width: 480px) {
+            .card-materi {
+                min-height: 100px;
+            }
+            .icon {
+                width: 32px;
+                height: 32px;
             }
         }
 
-        @media (min-width: 768px) or (orientation: landscape) and (min-width: 550px) {
+        @media (min-width: 768px) {
             .grid-materi {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
+                gap: 15px;
+            }
+            .card-materi.evaluasi-card {
+                grid-column: span 3;
             }
             .split-layout {
                 flex-direction: row;
@@ -249,70 +275,83 @@
 
     <div class="app-container">
 
+        <!-- SCENE 1: SPLASH SCREEN -->
         <div id="sc-splash" class="scene active">
             <h1>DIGI-NET</h1>
             <h2>Media & Jaringan Telekomunikasi SMK 2026</h2>
-            <p>Aplikasi Penunjang Belajar Mandiri (SPA Kompatibel Seluler)</p>
+            <p>Aplikasi SPA Interaktif - Responsif HP & Tablet</p>
             <button class="btn" onclick="changeScene('sc-dashboard')">MULAI BELAJAR</button>
         </div>
 
+        <!-- SCENE 2: DASHBOARD MENU -->
         <div id="sc-dashboard" class="scene">
-            <h1>Menu Utama Modul</h1>
-            <p style="text-align: center; margin-bottom: 5px;">Silakan pilih salah satu sub-materi telekomunikasi di bawah ini:</p>
+            <h1>Menu Utama</h1>
+            <p style="text-align: center; margin-bottom: 5px;">Silakan pilih modul materi atau evaluasi di bawah ini:</p>
             
             <div class="grid-materi">
+                <!-- 1. IP Address -->
                 <div class="card-materi" onclick="changeScene('sc-materi-ip')">
-                    <h3>a. IP Address & Sistem TCP/IP</h3>
-                    <p>Konsep pengalamatan IPv4, subnetting, pengiriman paket, dan arsitektur layer TCP/IP.</p>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                    <h3>IP Address</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem Layanan Jaringan siap dikembangkan sesuai Storyboard.')">
-                    <h3>b. Sistem Layanan Jaringan</h3>
-                    <p>Memahami arsitektur layanan komunikasi data, bandwidth, throughput, dan QoS jaringan.</p>
+                <!-- 2. Sistem TCP/IP -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem TCP/IP')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <h3>Sistem TCP/IP</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem Keamanan Jaringan siap dikembangkan sesuai Storyboard.')">
-                    <h3>c. Sistem Keamanan Jaringan</h3>
-                    <p>Konsep dasar firewall, enkripsi data, deteksi intrusi, dan aspek keamanan telekomunikasi.</p>
+                <!-- 3. Sistem Layanan Jaringan -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem Layanan Jaringan')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55 Ext.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm13-11H4c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zM7 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                    <h3>Sistem Layanan Jaringan</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem Seluler siap dikembangkan sesuai Storyboard.')">
-                    <h3>d. Sistem Seluler</h3>
-                    <p>Evolusi teknologi nirkabel seluler dari generasi awal, arsitektur BTS, hingga teknologi masa kini.</p>
+                <!-- 4. Sistem Keamanan Jaringan Telekomunikasi -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem Keamanan Jaringan')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 15.41L7.79 13.2l1.42-1.42L11 13.58l4.79-4.79 1.42 1.42L11 16.41z"/></svg>
+                    <h3>Sistem Keamanan Jaringan</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem Microwave siap dikembangkan sesuai Storyboard.')">
-                    <h3>e. Sistem Microwave</h3>
-                    <p>Prinsip transmisi gelombang mikro terrestrial, rugi-rugi propagasi, dan Line of Sight (LoS).</p>
+                <!-- 5. Sistem Seluler -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem Seluler')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+                    <h3>Sistem Seluler</h3>
                 </div>
 
+                <!-- 6. Sistem Microwave -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem Microwave')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 11v1c0 2.21 1.79 4 4 4v1.93z"/></svg>
+                    <h3>Sistem Microwave</h3>
+                </div>
+
+                <!-- 7. Sistem VSAT IP -->
                 <div class="card-materi" onclick="changeScene('sc-materi-vsat')">
-                    <h3>f. Sistem VSAT IP</h3>
-                    <p>Arsitektur komunikasi satelit bumi berukuran kecil menggunakan basis protokol IP.</p>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-17.93c3.95.49 7 3.85 7 7.93 0 .62-.08 1.21-.21 1.79L15 11v-1c0-2.21-1.79-4-4-4V4.07z"/></svg>
+                    <h3>Sistem VSAT IP</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem Optik siap dikembangkan sesuai Storyboard.')">
-                    <h3>g. Sistem Optik</h3>
-                    <p>Prinsip penyaluran pulsa cahaya lewat serat kaca (Fiber Optic), struktur core, cladding, dan jenis kabel.</p>
+                <!-- 8. Sistem Optik -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem Optik')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M2 9v6h2v-6H2zm18 0v6h2v-6h-2M5 12h14v1H5v-1z"/></svg>
+                    <h3>Sistem Optik</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Sistem WLAN siap dikembangkan sesuai Storyboard.')">
-                    <h3>h. Sistem WLAN</h3>
-                    <p>Media jaringan lokal tanpa kabel (Wi-Fi), standar IEEE 802.11, frekuensi kerja, dan topologi ad-hoc/infrastruktur.</p>
+                <!-- 9. Sistem WLAN -->
+                <div class="card-materi" onclick="alert('Modul Pengembangan: Sistem WLAN')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.22 19.58 10.57 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"/></svg>
+                    <h3>Sistem WLAN</h3>
                 </div>
 
-                <div class="card-materi" onclick="alert('Modul Konten Pendalaman Konsep siap dikembangkan sesuai Storyboard.')">
-                    <h3>i. Pendalaman Konsep Jaringan</h3>
-                    <p>Rangkuman studi kasus integrasi berbagai media transmisi dalam satu ekosistem telekomunikasi.</p>
-                </div>
-
-                <div class="card-materi card-evaluasi" onclick="changeScene('sc-evaluasi')">
-                    <h3>🎯 UJIAN EVALUASI AKHIR</h3>
-                    <p>Uji kompetensi kognitif (C3-C6) Anda melalui kuis interaktif gabungan dari keseluruhan 9 materi.</p>
+                <!-- 10. Menu Soal Evaluasi -->
+                <div class="card-materi evaluasi-card" onclick="changeScene('sc-evaluasi')">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <h3>Soal Evaluasi Akhir</h3>
                 </div>
             </div>
         </div>
 
+        <!-- SCENE 3: MODUL INTERAKTIF IP ADDRESS -->
         <div id="sc-materi-ip" class="scene">
             <button class="btn btn-back" onclick="changeScene('sc-dashboard')">⬅ Menu Utama</button>
             <div class="split-layout">
@@ -333,6 +372,7 @@
             </div>
         </div>
 
+        <!-- SCENE 4: MODUL INTERAKTIF VSAT -->
         <div id="sc-materi-vsat" class="scene">
             <button class="btn btn-back" onclick="changeScene('sc-dashboard')">⬅ Menu Utama</button>
             <div class="split-layout">
@@ -356,19 +396,18 @@
             </div>
         </div>
 
+        <!-- SCENE 5: SCENE EVALUASI -->
         <div id="sc-evaluasi" class="scene">
             <button class="btn btn-back" onclick="changeScene('sc-dashboard')">⬅ Menu Utama</button>
             <div class="split-layout">
                 <div class="panel-left">
-                    <h2>Lembar Evaluasi Mandiri</h2>
-                    <p>Bagian ini digunakan untuk melakukan penilaian formatif akhir siswa SMK Kelas X/XI fase E.</p>
-                    <p>Hasil pengerjaan akan langsung dihitung di memori peramban lokal (SPA).</p>
+                    <h2>Evaluasi Kemampuan</h2>
+                    <p>Menu ini digunakan untuk menguji pemahaman Anda terhadap seluruh 9 kompetensi dasar Media dan Jaringan Telekomunikasi yang telah dipelajari.</p>
                 </div>
                 <div class="panel-right">
-                    <span style="font-size: 40px; margin-bottom: 10px;">🎯</span>
-                    <h3>Kuis &amp; Teka-teki Silang</h3>
-                    <p style="text-align: center; max-width: 280px;">Sistem Evaluasi Interaktif siap diintegrasikan dengan bank soal pilihan ganda pilihan materi a s.d i.</p>
-                    <button class="btn" style="background-color: var(--evaluasi-color); color: white;" onclick="alert('Kuis dimulai! Logika skrip kuis dapat ditambahkan di sini.')">MULAI EVALUASI</button>
+                    <svg class="icon" style="width:48px; height:48px; fill:var(--evaluasi); margin-bottom:10px;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                    <h3>Siap untuk Memulai Kuis Akhir?</h3>
+                    <button class="btn" style="background-color: var(--evaluasi); color: white;" onclick="alert('Memulai Paket Soal Evaluasi Utama...')">MULAI UJIAN</button>
                 </div>
             </div>
         </div>
@@ -376,7 +415,6 @@
     </div>
 
     <script>
-        // Fungsi Router Navigasi SPA
         function changeScene(sceneId) {
             const scenes = document.querySelectorAll('.scene');
             scenes.forEach(scene => scene.classList.remove('active'));
@@ -384,7 +422,6 @@
             if(targetScene) targetScene.classList.add('active');
         }
 
-        // Logika Pemeriksaan IP Address
         function cekKoneksiIP() {
             const inputVal = document.getElementById('input-pc1').value.trim();
             const feedback = document.getElementById('feedback-ip');
@@ -402,12 +439,11 @@
                     feedback.style.color = "var(--danger)";
                 }
             } else {
-                feedback.innerHTML = "Gagal: Jaringan tidak terinfeksi (Subnet salah).";
+                feedback.innerHTML = "Gagal: Jaringan tidak terjangkau (Subnet salah).";
                 feedback.style.color = "var(--danger)";
             }
         }
 
-        // Logika Pencarian Sinyal Satelit VSAT
         function updateVsatSim(val) {
             document.getElementById('sudut-val').innerText = val;
             const fill = document.getElementById('signal-fill');
