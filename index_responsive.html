@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGI-NET: Media & Jaringan Telekomunikasi</title>
+    <style>
+        /* CSS RESET & CORE VARIABLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --success: #4ade80;
+            --danger: #f87171;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background-color: #020617;
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* RESPONSIVE CONTAINER FOR MOBILE (PORTRAIT & LANDSCAPE) */
+        .app-container {
+            width: 100%;
+            max-width: 1024px;
+            min-height: 85vh;
+            background-color: var(--bg-dark);
+            border: 2px solid #334155;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* SPA SCENE MANAGEMENT */
+        .scene {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .scene.active {
+            display: flex;
+        }
+
+        /* TYPOGRAPHY */
+        h1 { color: var(--primary); font-size: 24px; margin-bottom: 8px; text-align: center; }
+        h2 { color: var(--text-light); font-size: 18px; margin-bottom: 12px; }
+        h3 { color: var(--primary); font-size: 16px; margin-bottom: 6px; }
+        p { color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 10px; }
+
+        /* BUTTONS */
+        .btn {
+            background-color: var(--primary);
+            color: #0f172a;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        .btn-back {
+            background-color: #475569;
+            color: white;
+            padding: 8px 15px;
+            font-size: 12px;
+            max-width: 150px;
+            margin: 0 0 15px 0;
+        }
+
+        /* SC-01: SPLASH SCREEN */
+        #sc-splash {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        #sc-splash h1 { font-size: 36px; margin-bottom: 15px; }
+
+        /* SC-02: DASHBOARD MENU */
+        .grid-materi {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 60vh;
+            padding-right: 5px;
+        }
+        .card-materi {
+            background-color: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .card-materi:hover {
+            border-color: var(--primary);
+            background-color: #1e293b90;
+        }
+
+        /* FLEXIBLE RESPONSIVE SPLIT LAYOUT */
+        .split-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-grow: 1;
+        }
+        .panel-left, .panel-right {
+            width: 100%;
+            background: #1e293b50;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        .panel-right {
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* MINI LAB COMPONETS */
+        .input-group {
+            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .input-ip {
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .feedback {
+            margin-top: 12px;
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* SLIDER & SIGNAL BAR */
+        .slider-container {
+            width: 100%;
+            max-width: 280px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .slider {
+            width: 100%;
+            margin-top: 8px;
+            height: 8px;
+            border-radius: 4px;
+            background: #475569;
+            outline: none;
+        }
+        .signal-bar {
+            width: 100%;
+            max-width: 280px;
+            height: 20px;
+            background: #334155;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .signal-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--danger);
+            transition: width 0.1s, background 0.2s;
+        }
+
+        /* MEDIA QUERIES FOR LANDSCAPE / TABLETS */
+        @media (min-width: 600px) {
+            .grid-materi {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) or (orientation: landscape) and (min-width: 550px) {
+            .grid-materi {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .split-layout {
+                flex-direction: row;
+            }
+            .panel-left {
+                width: 45%;
+            }
+            .panel-right {
+                width: 55%;
+            }
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- SCENE 1: SPLASH SCREEN -->
+        <div id="sc-splash" class="scene active">
+            <h1>DIGI-NET MOBILE</h1>
+            <h2>Media & Jaringan Telekomunikasi SMK 2026</h2>
+            <p>Optimized for Mobile Portrait & Landscape</p>
+            <button class="btn" onclick="changeScene('sc-dashboard')">MULAI BELAJAR</button>
+        </div>
+
+        <!-- SCENE 2: DASHBOARD MENU -->
+        <div id="sc-dashboard" class="scene">
+            <h1>Menu Utama</h1>
+            <p style="text-align: center;">Pilih sub-materi untuk simulasi praktikum digital langsung dari HP Anda.</p>
+            
+            <div class="grid-materi">
+                <div class="card-materi" onclick="changeScene('sc-materi-ip')">
+                    <h3>a. IP Address & TCP/IP</h3>
+                    <p>Simulasi konfigurasi segmen alamat IP jaringan host.</p>
+                </div>
+                <div class="card-materi" onclick="changeScene('sc-materi-vsat')">
+                    <h3>g. Sistem VSAT IP</h3>
+                    <p>Simulasi pelacakan arah sinyal antena satelit.</p>
+                </div>
+                <div class="card-materi" style="opacity: 0.5; cursor: not-allowed;">
+                    <h3>b. Sistem Layanan Jaringan</h3>
+                    <p>Modul Pengembangan.</p>
+                </div>
+                <div class="card-materi" style="opacity: 0.5; cursor: not-allowed;">
+                    <h3>c. Keamanan Jaringan</h3>
+                    <p>Modul Pengembangan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENE 3: MODUL INTERAKTIF IP ADDRESS -->
+        <div id="sc-materi-ip" class="scene">
+            <button class="btn btn-back" onclick="changeScene('sc-dashboard')">⬅ Menu Utama</button>
+            <div class="split-layout">
+                <div class="panel-left">
+                    <h2>Konsep IP & Subnetting</h2>
+                    <p>Agar dua perangkat terhubung langsung tanpa router, segmentasi Network ID wajib sama.</p>
+                    <p><b>Tantangan:</b> Set IP PC-1 agar satu subnet dengan Gateway Router (192.168.1.1/24)!</p>
+                </div>
+                <div class="panel-right">
+                    <h3>LAB: INTERKONEKSI IP</h3>
+                    <p style="color: var(--primary); font-size: 13px; font-weight: bold; margin-top: 5px;">Gateway: 192.168.1.1</p>
+                    <div class="input-group">
+                        <input type="text" id="input-pc1" class="input-ip" placeholder="Contoh: 192.168.1.5">
+                    </div>
+                    <button class="btn" style="background-color: var(--success);" onclick="cekKoneksiIP()">UJI KONEKSI</button>
+                    <div id="feedback-ip" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENE 4: MODUL INTERAKTIF VSAT -->
+        <div id="sc-materi-vsat" class="scene">
+            <button class="btn btn-back" onclick="changeScene('sc-dashboard')">⬅ Menu Utama</button>
+            <div class="split-layout">
+                <div class="panel-left">
+                    <h2>Sistem VSAT IP</h2>
+                    <p>Komunikasi satelit memerlukan ketepatan elevasi sudut parabola untuk meminimalisir interferensi.</p>
+                    <p><b>Tantangan:</b> Geser slider hingga mencapai sudut optimal 45°!</p>
+                </div>
+                <div class="panel-right">
+                    <h3>ALIGNMENT PARABOLA</h3>
+                    <div class="slider-container">
+                        <label>Sudut: <span id="sudut-val" style="color:var(--primary); font-weight:bold;">0</span>°</label>
+                        <input type="range" min="0" max="90" value="0" class="slider" id="vsat-slider" oninput="updateVsatSim(this.value)">
+                    </div>
+                    <p style="font-size:12px; margin-bottom: 2px;">Indikator Sinyal:</p>
+                    <div class="signal-bar">
+                        <div id="signal-fill" class="signal-fill"></div>
+                    </div>
+                    <div id="feedback-vsat" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function changeScene(sceneId) {
+            const scenes = document.querySelectorAll('.scene');
+            scenes.forEach(scene => scene.classList.remove('active'));
+            const targetScene = document.getElementById(sceneId);
+            if(targetScene) targetScene.classList.add('active');
+        }
+
+        function cekKoneksiIP() {
+            const inputVal = document.getElementById('input-pc1').value.trim();
+            const feedback = document.getElementById('feedback-ip');
+            
+            if (inputVal === "192.168.1.1") {
+                feedback.innerHTML = "Error: IP Bentrok dengan Gateway!";
+                feedback.style.color = "var(--danger)";
+            } else if (inputVal.startsWith("192.168.1.")) {
+                const oktet = parseInt(inputVal.split('.')[3]);
+                if(oktet >= 2 && oktet <= 254) {
+                    feedback.innerHTML = "Sukses! Perangkat Terhubung Sempurna.";
+                    feedback.style.color = "var(--success)";
+                } else {
+                    feedback.innerHTML = "Gagal: Alamat Host tidak valid.";
+                    feedback.style.color = "var(--danger)";
+                }
+            } else {
+                feedback.innerHTML = "Gagal: Jaringan tidak terjangkau (Subnet salah).";
+                feedback.style.color = "var(--danger)";
+            }
+        }
+
+        function updateVsatSim(val) {
+            document.getElementById('sudut-val').innerText = val;
+            const fill = document.getElementById('signal-fill');
+            const feedback = document.getElementById('feedback-vsat');
+            const target = 45;
+            const selisih = Math.abs(val - target);
+            let persentaseSinyal = Math.max(0, 100 - (selisih * 4));
+            
+            fill.style.width = persentaseSinyal + '%';
+
+            if (persentaseSinyal > 90) {
+                fill.style.backgroundColor = "var(--success)";
+                feedback.innerHTML = "Sinyal Terkunci Sempurna!";
+                feedback.style.color = "var(--success)";
+            } else if (persentaseSinyal > 40) {
+                fill.style.backgroundColor = "var(--warning)";
+                feedback.innerHTML = "Sinyal Lemah... Sesuaikan sudut.";
+                feedback.style.color = "var(--warning)";
+            } else {
+                fill.style.backgroundColor = "var(--danger)";
+                feedback.innerHTML = "No Service.";
+                feedback.style.color = "var(--danger)";
+            }
+        }
+    </script>
+</body>
+</html>
